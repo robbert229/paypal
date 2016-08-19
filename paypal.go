@@ -43,7 +43,7 @@ type (
 		Details         []ErrorDetail `json:"details"`
 	}
 
-	// ErrorDetails map to error_details object
+	// ErrorDetail maps to error_details object
 	ErrorDetail struct {
 		Field string `json:"field"`
 		Issue string `json:"issue"`
@@ -91,7 +91,7 @@ func NewRequest(method, url string, payload interface{}) (*http.Request, error) 
 	return http.NewRequest(method, url, buf)
 }
 
-// GetAcessToken request a new access token from Paypal
+// GetAccessToken requests a new access token from Paypal
 func (c *Client) GetAccessToken() (*TokenResp, error) {
 	buf := bytes.NewBuffer([]byte("grant_type=client_credentials"))
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/oauth2/token"), buf)
