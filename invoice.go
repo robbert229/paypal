@@ -52,6 +52,50 @@ const (
 	NO_DUE_DATE           TermType = "NO_DUE_DATE"
 )
 
+// InvoiceStatus represents the status of an invoice.
+type InvoiceStatus string
+
+const (
+	DRAFT              InvoiceStatus = "DRAFT"
+	SENT               InvoiceStatus = "SENT"
+	PAID               InvoiceStatus = "PAID"
+	MARKED_AS_PAID     InvoiceStatus = "MARKED_AS_PAID"
+	CANCELLED          InvoiceStatus = "CANCELLED"
+	REFUNDED           InvoiceStatus = "REFUNDED"
+	PARTIALLY_REFUNDED InvoiceStatus = "PARTIALLY_REFUNDED"
+	MARKED_AS_REFUNDED InvoiceStatus = "MARKED_AS_REFUNDED"
+	UNPAID             InvoiceStatus = "UNPAID"
+	PAYMENT_PENDING    InvoiceStatus = "PAYMENT_PENDING"
+)
+
+type PaymentType string
+
+const (
+	PAYPAL   PaymentType = "PAYPAL"
+	EXTERNAL PaymentType = "EXTERNAL"
+)
+
+type TransactionType string
+
+const (
+	SALE          TransactionType = "SALE"
+	AUTHORIZATION TransactionType = "AUTHORIZATION"
+	CAPTURE       TransactionType = "CAPTURE"
+)
+
+type ExternalTransactionMethod string
+
+const (
+	METHOD_BANK_TRANSFER ExternalTransactionMethod = "BANK_TRANSFER"
+	METHOD_CASH          ExternalTransactionMethod = "CASH"
+	METHOD_CHECK         ExternalTransactionMethod = "CHECK"
+	METHOD_CREDIT_CARD   ExternalTransactionMethod = "CREDIT_CARD"
+	METHOD_DEBIT_CARD    ExternalTransactionMethod = "DEBIT_CARD"
+	METHOD_PAYPAL        ExternalTransactionMethod = "PAYPAL"
+	METHOD_WIRE_TRANSFER ExternalTransactionMethod = "WIRE_TRANSFER"
+	METHOD_OTHER         ExternalTransactionMethod = "OTHER"
+)
+
 type (
 	Phone struct {
 		CountryCode    string `json:"country_code"`
@@ -163,5 +207,75 @@ type (
 		MerchantMemo               string             `json:"merchant_memo"`
 		LogoURL                    string             `json:"logo_url"`
 		Attachments                []*FileAttachments `json:"attachments"`
+	}
+
+	PaymentDetail struct {
+		Type            PaymentType               `json:"type"`
+		TransactionID   string                    `json:"transaction_id"`
+		TransactionType TransactionType           `json:"transaction_type"`
+		Date            string                    `json:"date"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		Method          ExternalTransactionMethod `json:"method"`
+		Note            string                    `json:"note"`
+		Amount          *Amount                   `json:"amount"`
+	}
+
+	RefundDetail struct {
+		PaymentType PaymentType `json:"type"`
+		Date        string      `json:"date"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		Note        string      `json:"note"`
+		Amount      *Amount     `json:"amount"`
+	}
+
+	Metadata struct {
+		CreatedDate    string `json:"date"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		CreatedBy      string `json:"created_by"`
+		CancelledDate  string `json:"cancelled_date"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		CancelledBy    string `json:"cancelled_by"`
+		LastUpdateDate string `json:"last_update_date"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		LastUpdatedBy  string `json:"last_updated_by"`
+		FirstSentDate  string `json:"first_sent_date"`
+		LastSentDate   string `json:"last_sent_date"`
+		LastSentBy     string `json:"last_sent_by"`
+		PayerViewURL   string `json:"payer_view_url"`
+	}
+
+	PaymentSummary struct {
+		Paypal Currency `json:"paypal"`
+		Other  Currency `json:"other"`
+	}
+
+	CreateInvoiceResp struct {
+		ID                         string            `json:"id"`
+		Number                     string            `json:"number"`
+		TemplateID                 string            `json:"template_id"`
+		URI                        string            `json:"uri"`
+		Status                     InvoiceStatus     `json:"status"`
+		MerchantInfo               MerchantInfo      `json:"merchant_info"`
+		BillingInfo                BillingInfo       `json:"billing_info"`
+		CCInfo                     []Participant     `json:"cc_info"`
+		ShippingInfo               ShippingInfo      `json:"shipping_info"`
+		Items                      []Item            `json:"items"`
+		InvoiceDate                string            `json:"invoice_date"`
+		PaymentTerm                PaymentTerm       `json:"payment_term"`
+		Reference                  string            `json:"reference"`
+		Discount                   Discount          `json:"discount"`
+		ShippingCost               ShippingCost      `json:"shipping_cost"`
+		Custom                     CustomAmount      `json:"custom"`
+		AllowPartialPayment        bool              `json:"allow_partial_payment"`
+		MinimumAmountDue           Currency          `json:"minimum_amount_due"`
+		TaxCalculatedAfterDiscount bool              `json:"tax_calculated_after_discount"`
+		TaxInclusive               bool              `json:"tax_inclusive"`
+		Terms                      string            `json:"terms"`
+		Note                       string            `json:"note"`
+		MerchantMemo               string            `json:"merchant_memo"`
+		LogoURL                    string            `json:"logo_url"`
+		TotalAmount                Currency          `json:"total_amount"`
+		Payments                   []PaymentDetail   `json:"payments"`
+		Refunds                    []RefundDetail    `json:"refunds"`
+		Metadata                   Metadata          `json:"metadata"`
+		PaidAmount                 PaymentSummary    `json:"paid_amount"`
+		RefundedAmount             PaymentSummary    `json:"refunded_amount"`
+		Attachments                []FileAttachments `json:"attachments"`
+		Links                      []Links           `json:"links"`
 	}
 )
