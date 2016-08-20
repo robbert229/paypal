@@ -214,14 +214,17 @@ type (
 	}
 
 	Invoice struct {
-		Number                     int                `json:"number,omitempty"`
+		ID                         string             `json:"id,omitempty"`
+		Number                     string             `json:"number,omitempty"`
 		TemplateID                 string             `json:"template_id,omitempty"`
+		URI                        string             `json:"uri,omitempty"`
+		Status                     *InvoiceStatus     `json:"status,omitempty"`
 		MerchantInfo               *MerchantInfo      `json:"merchant_info,omitempty"`
 		BillingInfo                []*BillingInfo     `json:"billing_info,omitempty"`
 		CCInfo                     []*Participant     `json:"cc_info,omitempty"`
 		ShippingInfo               *ShippingInfo      `json:"shipping_info,omitempty"`
 		Items                      []*InvoiceItem     `json:"items,omitempty"`
-		InvoiceDate                string             `json:"invoice_date,omitempty"` // The date when the invoice was enabled. The date format is yyyy-MM-dd z as defined in Internet Date/Time Format. (https://tools.ietf.org/html/rfc3339#section-5.6)
+		InvoiceDate                string             `json:"invoice_date,omitempty"`
 		PaymentTerm                *PaymentTerm       `json:"payment_term,omitempty"`
 		Reference                  string             `json:"reference,omitempty"`
 		Discount                   *Cost              `json:"discount,omitempty"`
@@ -235,7 +238,14 @@ type (
 		Note                       string             `json:"note,omitempty"`
 		MerchantMemo               string             `json:"merchant_memo,omitempty"`
 		LogoURL                    string             `json:"logo_url,omitempty"`
+		TotalAmount                *Currency          `json:"total_amount,omitempty"`
+		Payments                   []*PaymentDetail   `json:"payments,omitempty"`
+		Refunds                    []*RefundDetail    `json:"refunds,omitempty"`
+		Metadata                   *Metadata          `json:"metadata,omitempty"`
+		PaidAmount                 *PaymentSummary    `json:"paid_amount,omitempty"`
+		RefundedAmount             *PaymentSummary    `json:"refunded_amount,omitempty"`
 		Attachments                []*FileAttachments `json:"attachments,omitempty"`
+		Links                      []*Links           `json:"links,omitempty"`
 	}
 
 	PaymentDetail struct {

@@ -1,10 +1,49 @@
 package paypal
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestInvoice(t *testing.T) {
+func TestListMerchantInvoices(t *testing.T) {
 	withContext(func(c *Client) {
-		invoice := Invoice{
+		query := map[string]string{
+			"page":                 "1",
+			"page_size":            "25",
+			"total_count_required": "true",
+		}
+
+		invoices, err := c.ListInvoices(query)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for _, invoice := range invoices {
+			fmt.Printf("Invoice: %s\n", invoice.ID)
+		}
+	})
+}
+
+func TestSearchInvoice(t *testing.T) {
+	withContext(func(c *Client) {
+		search := SearchInvoiceRequest{
+			Email: "johnrowleyster-buyer@gmail.com",
+		}
+
+		invoices, err := c.SearchInvoices(search)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for _, invoice := range invoices {
+			fmt.Println(invoice)
+		}
+	})
+}
+
+func TestCreateInvoice(t *testing.T) {
+	withContext(func(c *Client) {
+		invoice := CreateInvoiceRequest{
 			MerchantInfo: &MerchantInfo{
 				Email:        "johnrowleyster-facilitator@gmail.com",
 				FirstName:    "Dennis",
