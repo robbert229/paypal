@@ -137,7 +137,7 @@ func (c *Client) ListInvoices() ([]*Invoice, error) {
 	return query.Invoices, c.SendWithAuth(req, &query)
 }
 
-// GenerateNextInvoiceNumber generates the next invoice number that is available to the user.
+// GenerateNextInvoiceNumber returns the number for the next invoice.
 func (c *Client) GenerateNextInvoiceNumber() (string, error) {
 	req, err := NewRequest("GET", fmt.Sprintf("%s/invoicing/invoices/next-invoice-number", c.APIBase), nil)
 	if err != nil {
